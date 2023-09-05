@@ -1,0 +1,39 @@
+.profile{
+    text-align: center;
+}
+
+.profile img{
+    width: 130px;
+    height: 130px;
+    margin-top: 20px;
+    object-fit: contain;
+}
+.profile h3{
+    font-weight: 800;
+    margin-bottom: 0px;
+}
+.profile h4{
+  font-size: medium;
+  font-weight: 600;
+  padding-left: 10px;
+  margin-bottom: 0px;
+}
+
+.sales{
+    display: flex;
+    flex-direction: column;
+}
+
+.sales a{
+    text-decoration: none;
+    color: black;
+    height: 40px;
+    padding: 10px 0 0 10px;
+}
+.sales a:hover{
+    background-color: lightblue;
+}
+mat-icon{
+    vertical-align: middle;
+    margin-right: 15px;
+}
