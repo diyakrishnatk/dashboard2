@@ -1,0 +1,315 @@
+<p>leads works!</p>
+
+<div class="leads-container">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <h2>Leads Management</h2>
+      <p>Manage potential customers and track sales opportunities</p>
+    </div>
+
+    <button class="add-btn" (click)="openAddForm()">
+      + Add New Lead
+    </button>
+  </div>
+
+  <!-- Statistics Cards -->
+  <div class="stats-grid">
+
+    <div class="stat-card">
+      <div class="stat-icon blue">👥</div>
+      <h3>Total Leads</h3>
+      <h2>{{ totalLeads }}</h2>
+      <p>All potential customers</p>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon orange">✚</div>
+      <h3>New Leads</h3>
+      <h2>{{ newLeads }}</h2>
+      <p>Recently generated leads</p>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon purple">✓</div>
+      <h3>Qualified Leads</h3>
+      <h2>{{ qualifiedLeads }}</h2>
+      <p>Potential sales opportunities</p>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon green">★</div>
+      <h3>Converted Leads</h3>
+      <h2>{{ convertedLeads }}</h2>
+      <p>Successfully converted</p>
+    </div>
+
+  </div>
+
+  <!-- Add / Edit Lead Form -->
+  <div class="form-card" *ngIf="showForm">
+
+    <h3>{{ isEditMode ? 'Edit Lead' : 'Add New Lead' }}</h3>
+
+    <form (ngSubmit)="saveLead()" #leadFormRef="ngForm">
+
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label>Lead ID</label>
+          <input
+            type="text"
+            [value]="'LEAD-' + leadForm.id"
+            disabled>
+        </div>
+
+        <div class="form-group">
+          <label>Lead Name *</label>
+          <input
+            type="text"
+            name="name"
+            [(ngModel)]="leadForm.name"
+            placeholder="Enter lead name"
+            required>
+        </div>
+
+        <div class="form-group">
+          <label>Email Address *</label>
+          <input
+            type="email"
+            name="email"
+            [(ngModel)]="leadForm.email"
+            placeholder="Enter email address"
+            required
+            email>
+        </div>
+
+        <div class="form-group">
+          <label>Phone Number *</label>
+          <input
+            type="tel"
+            name="phone"
+            [(ngModel)]="leadForm.phone"
+            placeholder="Enter phone number"
+            required>
+        </div>
+
+        <div class="form-group">
+          <label>Lead Source</label>
+          <select
+            name="source"
+            [(ngModel)]="leadForm.source">
+
+            <option *ngFor="let source of sources"
+              [value]="source">
+              {{ source }}
+            </option>
+
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Assigned Employee</label>
+          <input
+            type="text"
+            name="assignedTo"
+            [(ngModel)]="leadForm.assignedTo"
+            placeholder="Enter employee name">
+        </div>
+
+        <div class="form-group">
+          <label>Follow-up Date</label>
+          <input
+            type="date"
+            name="followUpDate"
+            [(ngModel)]="leadForm.followUpDate">
+        </div>
+
+        <div class="form-group">
+          <label>Lead Status</label>
+          <select
+            name="status"
+            [(ngModel)]="leadForm.status">
+
+            <option *ngFor="let status of statuses"
+              [value]="status">
+              {{ status }}
+            </option>
+
+          </select>
+        </div>
+
+        <div class="form-group full-width">
+          <label>Notes</label>
+          <textarea
+            name="notes"
+            [(ngModel)]="leadForm.notes"
+            rows="3"
+            placeholder="Enter additional lead information">
+          </textarea>
+        </div>
+
+      </div>
+
+      <div class="form-actions">
+
+        <button
+          type="submit"
+          class="add-btn"
+          [disabled]="leadFormRef.invalid">
+
+          {{ isEditMode ? 'Update Lead' : 'Save Lead' }}
+
+        </button>
+
+        <button
+          type="button"
+          class="cancel-btn"
+          (click)="cancelForm()">
+          Cancel
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+  <!-- Leads Table -->
+  <div class="table-card">
+
+    <div class="table-header">
+
+      <div>
+        <h3>All Leads</h3>
+        <p>View and manage your sales leads</p>
+      </div>
+
+      <div class="filters">
+
+        <input
+          type="text"
+          class="search-input"
+          [(ngModel)]="searchText"
+          placeholder="Search leads...">
+
+        <select
+          class="status-filter"
+          [(ngModel)]="selectedStatus">
+
+          <option value="All">All Statuses</option>
+
+          <option *ngFor="let status of statuses"
+            [value]="status">
+            {{ status }}
+          </option>
+
+        </select>
+
+      </div>
+
+    </div>
+
+    <div class="table-responsive">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>Lead ID</th>
+            <th>Lead Details</th>
+            <th>Phone</th>
+            <th>Source</th>
+            <th>Assigned To</th>
+            <th>Follow-up Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr *ngFor="let lead of filteredLeads">
+
+            <td>
+              <strong>#LEAD-{{ lead.id }}</strong>
+            </td>
+
+            <td>
+              <div class="lead-details">
+
+                <div class="lead-avatar">
+                  {{ lead.name.charAt(0).toUpperCase() }}
+                </div>
+
+                <div>
+                  <strong>{{ lead.name }}</strong>
+                  <small>{{ lead.email }}</small>
+                </div>
+
+              </div>
+            </td>
+
+            <td>{{ lead.phone }}</td>
+
+            <td>{{ lead.source }}</td>
+
+            <td>{{ lead.assignedTo || 'Not assigned' }}</td>
+
+            <td>
+              {{ lead.followUpDate ? (lead.followUpDate | date:'dd MMM yyyy') : 'Not scheduled' }}
+            </td>
+
+            <td>
+              <select
+                class="inline-status"
+                [ngClass]="getStatusClass(lead.status)"
+                [ngModel]="lead.status"
+                (ngModelChange)="updateLeadStatus(lead.id, $event)">
+
+                <option *ngFor="let status of statuses"
+                  [value]="status">
+                  {{ status }}
+                </option>
+
+              </select>
+            </td>
+
+            <td class="actions">
+
+              <button
+                class="edit-btn"
+                (click)="editLead(lead)">
+                Edit
+              </button>
+
+              <button
+                class="delete-btn"
+                (click)="deleteLead(lead.id)">
+                Delete
+              </button>
+
+            </td>
+
+          </tr>
+
+          <tr *ngIf="filteredLeads.length === 0">
+            <td colspan="8" class="no-data">
+              No leads found!
+            </td>
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+    <div class="table-footer">
+      Showing {{ filteredLeads.length }} leads
+    </div>
+
+  </div>
+
+</div>
